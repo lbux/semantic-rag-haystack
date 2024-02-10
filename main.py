@@ -14,16 +14,16 @@ from haystack_integrations.components.retrievers.chroma import ChromaQueryRetrie
 from haystack_integrations.document_stores.chroma import ChromaDocumentStore
 
 
-document_store = ChromaDocumentStore()
-
-chat_template = """Given the following context, answer the question.
-
-Context: 
-{% for document in documents %}
-    {{ document.content }}
+chat_template = """
+Answer the query based on the provided context.
+If the context does not contain the answer, say 'Answer not found'.
+Don't say anything else.
+Context:
+{% for doc in documents %}
+  {{ doc.content }}
 {% endfor %}
-
-Question: {{ question }}?
+query: {{query}}
+Answer:
 """
 
 generator = LlamaCppGenerator(
@@ -40,21 +40,7 @@ text_embedder = SentenceTransformersTextEmbedder(
 generator.warm_up()
 text_embedder.warm_up()
 
-
-index_pipeline = Pipeline()
-
-index_pipeline.add_component("converter", PyPDFToDocument())
-index_pipeline.add_component(
-    "document_embedder",
-    SentenceTransformersDocumentEmbedder(
-        model="sentence-transformers/all-MiniLM-L6-v2"
-    ),
-)
-index_pipeline.add_component(
-    "document_writer", DocumentWriter(document_store=document_store)
-)
-index_pipeline.connect("converter", "document_embedder")
-index_pipeline.connect("document_embedder", "document_writer")
+document_store = ChromaDocumentStore(persist_path="chroma_test")
 
 
 rag_pipeline = Pipeline()
@@ -66,21 +52,17 @@ rag_pipeline.add_component("prompt_builder", PromptBuilder(template=chat_templat
 rag_pipeline.add_component("llm", generator)
 
 
-# rag_pipeline.connect("text_embedder.embedding", "retriever.query_embedding")
 rag_pipeline.connect("retriever", "prompt_builder.documents")
 rag_pipeline.connect("prompt_builder", "llm")
 
 rag_pipeline.draw("rag_pipeline.png")
 
-
-index_pipeline.run({"converter": {"sources": ["source_documents/nothing.pdf"]}})
-
-prompt = f"What is your name?"
+prompt = f"What is an LLM?"
 result = rag_pipeline.run(
     {
         "retriever": {"query": prompt},
         "text_embedder": {"text": prompt},
-        "prompt_builder": {"question": prompt},
+        "prompt_builder": {"query": prompt},
     }
 )
 generated_text = result["llm"]["replies"][0]

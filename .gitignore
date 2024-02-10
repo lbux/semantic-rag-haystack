@@ -1,1 +1,4 @@
 *gguf
+*bin
+*.sqlite3
+*pdf
