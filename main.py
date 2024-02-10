@@ -3,12 +3,7 @@ import os
 from haystack import Document, Pipeline
 from haystack.components.builders.answer_builder import AnswerBuilder
 from haystack.components.builders.prompt_builder import PromptBuilder
-from haystack.components.converters import PyPDFToDocument
-from haystack.components.embedders import (
-    SentenceTransformersDocumentEmbedder,
-    SentenceTransformersTextEmbedder,
-)
-from haystack.components.writers import DocumentWriter
+from haystack.components.embedders import SentenceTransformersTextEmbedder
 from haystack_integrations.components.generators.llama_cpp import LlamaCppGenerator
 from haystack_integrations.components.retrievers.chroma import ChromaQueryRetriever
 from haystack_integrations.document_stores.chroma import ChromaDocumentStore
