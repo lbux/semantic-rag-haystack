@@ -1,4 +1,7 @@
-*gguf
-*bin
+*.gguf
+*.bin
 *.sqlite3
-*pdf
+*.pdf
+*.txt
+*.docx
+*.doc
