@@ -1,6 +1,3 @@
-from getpass import getpass
-import os
-
 from haystack import Pipeline
 from haystack.components.builders import PromptBuilder, AnswerBuilder
 from haystack.components.embedders import SentenceTransformersTextEmbedder
@@ -8,46 +5,13 @@ from haystack_integrations.components.generators.llama_cpp import LlamaCppGenera
 from haystack_integrations.components.retrievers.chroma import ChromaEmbeddingRetriever
 from haystack_integrations.document_stores.chroma import ChromaDocumentStore
 
-from haystack_integrations.components.evaluators.deepeval import (
-    DeepEvalEvaluator,
-    DeepEvalMetric,
-)
-
-
-def evaluate_context_relevance(questions, evaluation_pipeline, rag_pipeline):
-    contexts = []
-    responses = []
-    for question in questions:
-        response = rag_pipeline.run(
-            {
-                "text_embedder": {"text": question},
-                "prompt_builder": {"query": question},
-                "answer_builder": {"query": question},
-            }
-        )
-        contexts.append(
-            [d.content for d in response["answer_builder"]["answers"][0].documents]
-        )
-        responses.append(response["answer_builder"]["answers"][0].data)
-
-    evaluation_results = evaluation_pipeline.run(
-        {
-            "evaluator": {
-                "questions": questions,
-                "contexts": contexts,
-                "responses": responses,
-            }
-        }
-    )
-    return evaluation_results
-
-
-os.environ["OPENAI_API_KEY"] = getpass("Enter your OpenAI API key: ")
+from utils import serialize_pipeline_results
 
 chat_template = """
-Answer the query based on the provided context.
-If the context does not contain the answer, say 'Answer not found'.
-Don't say anything else.
+You are a helpful teaching assistant for a college course. Your objective
+is to provide answers from the syllabus (context) to student questions (query).
+If you are unable to answer a question based on the information in the syallabus,
+you should respond with "I'm not sure".
 Context:
 {% for doc in documents %}
   {{ doc.content }}
@@ -91,24 +55,18 @@ rag_pipeline.connect("embedder_retriever", "answer_builder.documents")
 
 rag_pipeline.draw("rag_pipeline.png")
 
-# prompt = f"What is an LLM?"
-# result = rag_pipeline.run(
-#     {
-#         "text_embedder": {"text": prompt},
-#         "prompt_builder": {"query": prompt},
-#         "answer_builder": {"query": prompt},
-#     }
-# )
-# generated_text = result["llm"]["replies"][0]
-# print(generated_text)
+prompts = [
+    "I want to communicate with the Professor and the TAs. What methods are available for me to do so?"
+]
+results = []
+for prompt in prompts:
+    result = rag_pipeline.run(
+        {
+            "text_embedder": {"text": prompt},
+            "prompt_builder": {"query": prompt},
+            "answer_builder": {"query": prompt},
+        }
+    )
+    results.append(result)
 
-evaluator = DeepEvalEvaluator(
-    metric=DeepEvalMetric.FAITHFULNESS,
-    metric_params={"model": "gpt-3.5-turbo"},
-)
-
-evaluator_pipeline = Pipeline()
-evaluator_pipeline.add_component("evaluator", evaluator)
-
-questions = ["What is the grading of this class?", "What textbooks do I need?"]
-print(evaluate_context_relevance(questions, evaluator_pipeline, rag_pipeline))
+serialize_pipeline_results(results)
