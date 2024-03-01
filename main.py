@@ -21,7 +21,7 @@ Answer:
 """
 
 generator = LlamaCppGenerator(
-    model_path="models/mistral-7b-instruct-v0.2.Q6_K.gguf",
+    model="models/mistral-7b-instruct-v0.2.Q6_K.gguf",
     n_ctx=12000,
     model_kwargs={"n_gpu_layers": -1},
     generation_kwargs={"max_tokens": 128, "temperature": 0.7},
