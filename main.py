@@ -5,7 +5,7 @@ from haystack_integrations.components.generators.llama_cpp import LlamaCppGenera
 from haystack_integrations.components.retrievers.chroma import ChromaEmbeddingRetriever
 from haystack_integrations.document_stores.chroma import ChromaDocumentStore
 
-from utils import serialize_pipeline_results
+from utils import serialize_generated_answer
 
 chat_template = """
 You are a helpful teaching assistant for a college course. Your objective
@@ -56,7 +56,7 @@ rag_pipeline.connect("embedder_retriever", "answer_builder.documents")
 rag_pipeline.draw("rag_pipeline.png")
 
 prompts = [
-    "I want to communicate with the Professor and the TAs. What methods are available for me to do so?"
+    'Is "The user has to select the options A and B or C" an example of an ambiguous requirement?',
 ]
 results = []
 for prompt in prompts:
@@ -69,4 +69,4 @@ for prompt in prompts:
     )
     results.append(result)
 
-serialize_pipeline_results(results)
+serialize_generated_answer(results)
