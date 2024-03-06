@@ -63,13 +63,20 @@ $env:CMAKE_ARGS = "-DLLAMA_CUBLAS=on"
 pip install llama-cpp-python
 ```
 
----
+### 6. Install `llama-cpp-haystack`
 
-Replace `ENVNAME` with your desired environment name. These steps will ensure that all necessary components and dependencies are installed for your project.
+Finally, install the `llama-cpp-haystack ` package:
+
+```bash
+pip install python-cpp-haystack
+```
+
+---
 
 ### Additional Notes:
 
-- Using conda is not required but highly recommended. Most issues can be resolved by starting from a clean environment.
+- Replace `ENVNAME` with preferred environment name.
+- Using conda is not required but highly recommended. Most issues can be resolved by
 
 First Run:
 

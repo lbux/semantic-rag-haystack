@@ -39,7 +39,7 @@ def serialize_generated_answer(results):
                 answer_dict["documents"] = [asdict(doc) for doc in answer.documents]
             serialized_data.append(answer_dict)
 
-    with open("serialized_data.json", "w", encoding="utf-8") as f:
+    with open("serialized_generated_data.json", "w", encoding="utf-8") as f:
         json.dump(serialized_data, f, ensure_ascii=False, indent=2)
 
 
@@ -48,19 +48,19 @@ def read_serialized_generated_answer():
     documents = []
     answers = []
 
-    with open("serialized_data.json", "r", encoding="utf-8") as f:
+    with open("serialized_generated_data.json", "r", encoding="utf-8") as f:
         serialized_data = json.load(f)
         for entry in serialized_data:
             query = entry.get("query", "")
             queries.append(query)
 
-            docs = [
+            document = [
                 doc["content"] for doc in entry.get("documents", []) if "content" in doc
             ]
-            documents.append(docs)
+            documents.append(document)
 
-            answer_data = entry.get("data", "")
-            answers.append(answer_data)
+            answer = entry.get("data", "")
+            answers.append(answer)
     return queries, documents, answers
 
 
@@ -73,5 +73,5 @@ def metric_to_params(metric, data):
 
 
 def serialize_evaluation_results(evaluation_results):
-    with open("evaluation_results.json", "w", encoding="utf-8") as f:
+    with open("serialized_evaluation_results.json", "w", encoding="utf-8") as f:
         json.dump(evaluation_results, f, ensure_ascii=False, indent=2)
