@@ -1,4 +1,3 @@
-
 ## Environment Setup Instructions
 
 Follow these steps to set up your development environment:
@@ -8,12 +7,10 @@ Follow these steps to set up your development environment:
 Before creating the Conda environment, ensure that the following prerequisites are installed on your system:
 
 - **Make:** Required for building some of the packages. The installation method depends on your operating system:
-
-  - On Linux, you can typically install `make` via your package manager, for example, `sudo apt-get install make` on Debian/Ubuntu.
-  - On macOS, `make` can be installed with brew using `brew install make`.
-  - On Windows, you might consider using a package manager like Chocolatey (`choco install make`) or installing .
+  - **Linux:** You can typically install `make` via your package manager, for example, `sudo apt-get install make` on Debian/Ubuntu.
+  - **macOS:** `make` can be installed with Homebrew using `brew install make`.
+  - **Windows:** Consider using a package manager like Chocolatey (`choco install make`) or installing Make for Windows.
 - **NVIDIA CUDA Toolkit 11.8:** Required for GPU support and compiling CUDA packages. Installation methods vary by operating system:
-
   - **Linux:** Follow the [official Linux installation guide](https://developer.nvidia.com/cuda-downloads?target_os=Linux) provided by NVIDIA, selecting the appropriate version and distribution.
   - **macOS:** CUDA support for macOS is limited and may not be available for newer versions. Check the [CUDA Toolkit archive](https://developer.nvidia.com/nvidia-cuda-toolkit-developer-tools-mac-hosts) for compatibility.
   - **Windows:** Use the [official Windows installation guide](https://developer.nvidia.com/cuda-downloads?target_os=Windows) to download and install the toolkit suitable for your system.
@@ -65,30 +62,49 @@ pip install llama-cpp-python
 
 ### 6. Install `llama-cpp-haystack`
 
-Finally, install the `llama-cpp-haystack ` package:
+Finally, install the `llama-cpp-haystack` package:
 
 ```bash
-pip install python-cpp-haystack
+pip install llama-cpp-haystack
 ```
 
 ---
 
 ### Additional Notes:
 
-- Replace `ENVNAME` with preferred environment name.
-- Using conda is not required but highly recommended. Most issues can be resolved by
+- Replace `ENVNAME` with your preferred environment name.
+- While using Conda is not required, it is highly recommended for managing dependencies and ensuring consistent environments.
 
-First Run:
+## First Run Instructions
 
-1. Run `python model_download.py` to download the Mistral model from HuggingFace into `/models`
-2. Create `/SOURCE_DOCUMENTS` folder and add pdf, txt, and/or md files
-3. Run `python ingest.py` to ingest documents in `/SOURCE_DOCUMENTS` using ChromaDB
-4. Run `python main.py` to generate answers from the `prompts` list in `main.py`. Results will be serialized.
-5. Run `python evaluator.py` and provide `OPENAI_API_KEY` to evaluate LLM answers to `prompts`. Results will be serialized.
+To get started with the project, follow these steps:
 
-Subsequent Runs:
+1. **Download the Mistral Model:**Run the following command to download the Mistral model from HuggingFace into the `/models` directory.
 
-1. Adding documents to `/SOURCE_DOCUMENTS` necessitates rerunning `ingest.py`
-2. Reruns of `ingest.py` should also be followed with runs of `main.py` and `evaluator.py`
-3. Changes in `main.py` only necessitates running `evaluator.py`
-4. Changing metric in `evaluator.py` only necessitates running `evaluator.py`
+   ```bash
+   python model_download.py
+   ```
+2. **Prepare Source Documents:**Create a `/SOURCE_DOCUMENTS` folder at the root of your project directory and add your PDF, TXT, and/or MD files that you wish to process.
+3. **Ingest Documents into ChromaDB:**Run the following command to ingest the documents in `/SOURCE_DOCUMENTS` using ChromaDB.
+
+   ```bash
+   python ingest.py
+   ```
+4. **Generate Answers from Prompts:**Execute the following command to generate answers from the prompts list in `main.py`. Results will be serialized for further use.
+
+   ```bash
+   python main.py
+   ```
+5. **Evaluate LLM Answers:**
+   Finally, run the evaluator script. You'll be prompted to provide your `OPENAI_API_KEY` for this step. The script evaluates LLM answers to prompts, and the results will be serialized.
+
+   ```bash
+   python evaluator.py
+   ```
+
+## Subsequent Runs
+
+- **Adding Documents:** If you add new documents to `/SOURCE_DOCUMENTS`, you'll need to rerun the `ingest.py` script to process these new documents.
+- **After Ingestion:** Following any run of `ingest.py`, you should also rerun `main.py` and `evaluator.py` to ensure that your answers and evaluations are up-to-date with the latest document set.
+- **Changes to `main.py`:** If you make modifications only in `main.py`, it necessitates a rerun of `evaluator.py` to evaluate any new or altered prompts.
+- **Modifying Evaluation Metrics:** Should there be any changes to the evaluation metric in `evaluator.py`, rerunning `evaluator.py` alone suffices to apply these changes to your evaluation results.
