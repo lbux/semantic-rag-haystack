@@ -79,18 +79,18 @@ pip install llama-cpp-haystack
 
 To get started with the project, follow these steps:
 
-1. **Download the Mistral Model:**Run the following command to download the Mistral model from HuggingFace into the `/models` directory.
+1. **Download the Mistral Model:** Run the following command to download the Mistral model from HuggingFace into the `/models` directory.
 
    ```bash
    python model_download.py
    ```
-2. **Prepare Source Documents:**Create a `/SOURCE_DOCUMENTS` folder at the root of your project directory and add your PDF, TXT, and/or MD files that you wish to process.
-3. **Ingest Documents into ChromaDB:**Run the following command to ingest the documents in `/SOURCE_DOCUMENTS` using ChromaDB.
+2. **Prepare Source Documents:** Create a `/SOURCE_DOCUMENTS` folder at the root of your project directory and add your PDF, TXT, and/or MD files that you wish to process.
+3. **Ingest Documents into ChromaDB:** Run the following command to ingest the documents in `/SOURCE_DOCUMENTS` using ChromaDB.
 
    ```bash
    python ingest.py
    ```
-4. **Generate Answers from Prompts:**Execute the following command to generate answers from the prompts list in `main.py`. Results will be serialized for further use.
+4. **Generate Answers from Prompts:** Execute the following command to generate answers from the prompts list in `main.py`. Results will be serialized for further use.
 
    ```bash
    python main.py
