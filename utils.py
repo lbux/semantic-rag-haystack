@@ -22,6 +22,7 @@ uptrain_parameters_mapping = {
         "responses",
     ],
     UpTrainMetric.RESPONSE_MATCHING: [
+        "questions",
         "responses",
         "ground_truths",
     ],
@@ -30,23 +31,28 @@ uptrain_parameters_mapping = {
 
 def serialize_generated_answer(results):
     serialized_data = []
-    for result in results:
-        answers = result.get("answer_builder", {}).get("answers", [])
 
-        for answer in answers:
-            answer_dict = asdict(answer)
+    for result in results:
+        staff_answer = result["staff_answer"]
+        generated_answers = result["generated_answer"].get("answer_builder", {}).get("answers", [])
+
+        for generated_answer in generated_answers:
+            answer_dict = asdict(generated_answer)
+            answer_dict["staff_answer"] = staff_answer 
             if "documents" in answer_dict:
-                answer_dict["documents"] = [asdict(doc) for doc in answer.documents]
+                answer_dict["documents"] = [asdict(doc) for doc in generated_answer.documents]
             serialized_data.append(answer_dict)
 
     with open("serialized_generated_data.json", "w", encoding="utf-8") as f:
         json.dump(serialized_data, f, ensure_ascii=False, indent=2)
 
 
+
 def read_serialized_generated_answer():
     queries = []
     documents = []
     answers = []
+    staff_answers = []
 
     with open("serialized_generated_data.json", "r", encoding="utf-8") as f:
         serialized_data = json.load(f)
@@ -61,7 +67,9 @@ def read_serialized_generated_answer():
 
             answer = entry.get("data", "")
             answers.append(answer)
-    return queries, documents, answers
+            staff_answer = entry.get("staff_answer", "")
+            staff_answers.append(staff_answer)
+    return queries, documents, answers, staff_answers
 
 
 def metric_to_params(metric, data):
@@ -77,13 +85,27 @@ def serialize_evaluation_results(evaluation_results):
         json.dump(evaluation_results, f, ensure_ascii=False, indent=2)
 
 def read_input_json(file_name):
-    input = []
+    qa_pairs = []
+
     with open(file_name, "r", encoding="utf-8") as f:
         data = json.load(f)
         for entry in data:
             if entry.get("class", "") == "Course Policy/Format":
-                text = entry.get("text", "").strip()
-                if not text:
+                question = entry.get("text", "").strip()
+                if not question:
                     continue
-                input.append(text)
-    return input
+
+                admin_answer, staff_answer = None, None
+                for answer in entry.get("answers", []):
+                    if answer["user"]["role"] == "admin" and not admin_answer:
+                        admin_answer = answer["text"].strip()
+                        break
+                    elif answer["user"]["role"] == "staff" and not staff_answer:
+                        staff_answer = answer["text"].strip()
+
+                staff_answer = admin_answer if admin_answer else staff_answer
+
+                qa_pairs.append({"question": question, "staff_answer": staff_answer})
+
+    return qa_pairs
+

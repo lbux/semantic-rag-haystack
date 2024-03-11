@@ -5,7 +5,7 @@ from haystack_integrations.components.generators.llama_cpp import LlamaCppGenera
 from haystack_integrations.components.retrievers.chroma import ChromaEmbeddingRetriever
 from haystack_integrations.document_stores.chroma import ChromaDocumentStore
 
-from utils import serialize_generated_answer, read_input_json
+from utils import serialize_generated_answer, read_input_json, read_serialized_generated_answer_v2
 
 chat_template = """
 You are a teaching assistant for a course on Data Management.
@@ -60,16 +60,20 @@ rag_pipeline.connect("embedder_retriever", "answer_builder.documents")
 
 rag_pipeline.draw("rag_pipeline.png")
 
-prompts = read_input_json("summer21.json")
+prompts = read_input_json("spring22.json")
 results = []
-for prompt in prompts:
+for prompt_dict in prompts:
+    question = prompt_dict["question"]
+    staff_answer = prompt_dict["staff_answer"]
+
     result = rag_pipeline.run(
         {
-            "text_embedder": {"text": prompt},
-            "prompt_builder": {"query": prompt},
-            "answer_builder": {"query": prompt},
+            "text_embedder": {"text": question},
+            "prompt_builder": {"query": question},
+            "answer_builder": {"query": question},
         }
     )
-    results.append(result)
+    result_with_original = {"staff_answer": staff_answer, "generated_answer": result}
+    results.append(result_with_original)
 
 serialize_generated_answer(results)
