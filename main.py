@@ -5,13 +5,18 @@ from haystack_integrations.components.generators.llama_cpp import LlamaCppGenera
 from haystack_integrations.components.retrievers.chroma import ChromaEmbeddingRetriever
 from haystack_integrations.document_stores.chroma import ChromaDocumentStore
 
-from utils import serialize_generated_answer
+from utils import serialize_generated_answer, read_input_json
 
 chat_template = """
-You are a helpful teaching assistant for a college course. Your objective
-is to provide answers from the syllabus (context) to student questions (query).
-If you are unable to answer a question based on the information in the syallabus,
-you should respond with "I'm not sure".
+You are a teaching assistant for a course on Data Management.
+You will be provided with queries from students that have been posted on a discussion board, EdDiscussion.
+You will answer the queries using the data in the context.
+If you can not find the answer only using the context, do not provide an answer.
+
+Here is an example of the expected answer based on a query:
+
+QUERY: "Are we able to use private edStem posts to contact you or is email preferred?"
+ANSWER: "Yes, you can use private edStem posts or email to contact us. Also, there is a section in the syllabus describing how/where to contact us that you may find helpful.:"
 Context:
 {% for doc in documents %}
   {{ doc.content }}
@@ -21,7 +26,7 @@ Answer:
 """
 
 generator = LlamaCppGenerator(
-    model="models/mistral-7b-instruct-v0.2.Q6_K.gguf",
+    model="models/mistral-7b-instruct-v0.2.Q8_0.gguf",
     n_ctx=12000,
     model_kwargs={"n_gpu_layers": -1},
     generation_kwargs={"max_tokens": 128, "temperature": 0.7},
@@ -55,9 +60,7 @@ rag_pipeline.connect("embedder_retriever", "answer_builder.documents")
 
 rag_pipeline.draw("rag_pipeline.png")
 
-prompts = [
-    'Is "The user has to select the options A and B or C" an example of an ambiguous requirement?',
-]
+prompts = read_input_json("summer21.json")
 results = []
 for prompt in prompts:
     result = rag_pipeline.run(

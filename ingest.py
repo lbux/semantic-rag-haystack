@@ -40,7 +40,7 @@ ingest_pipeline.add_component(
 )
 ingest_pipeline.add_component(
     "document_splitter",
-    DocumentSplitter(split_by="word", split_length=150, split_overlap=50),
+    DocumentSplitter(split_by="sentence", split_length=2, split_overlap=0),
 )
 ingest_pipeline.add_component("document_cleaner", DocumentCleaner())
 ingest_pipeline.add_component("document_joiner", DocumentJoiner())

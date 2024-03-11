@@ -1,6 +1,8 @@
 import os
 import urllib.request
 
+from constants import MODEL_NAME, MODEL_GGUF_URL
+
 def download_model(model_name, model_url):
     model_dir = os.path.join(os.getcwd(), 'models')
     if not os.path.exists(model_dir):
@@ -15,4 +17,4 @@ def download_model(model_name, model_url):
 
 # call the function with parameters and allow to be ran from script
 if __name__ == '__main__':
-    download_model('mistral-7b-instruct-v0.2.Q6_K.gguf', 'https://huggingface.co/TheBloke/Mistral-7B-Instruct-v0.2-GGUF/resolve/main/mistral-7b-instruct-v0.2.Q6_K.gguf')
+    download_model(MODEL_NAME, MODEL_GGUF_URL)

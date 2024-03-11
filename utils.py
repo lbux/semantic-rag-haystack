@@ -75,3 +75,15 @@ def metric_to_params(metric, data):
 def serialize_evaluation_results(evaluation_results):
     with open("serialized_evaluation_results.json", "w", encoding="utf-8") as f:
         json.dump(evaluation_results, f, ensure_ascii=False, indent=2)
+
+def read_input_json(file_name):
+    input = []
+    with open(file_name, "r", encoding="utf-8") as f:
+        data = json.load(f)
+        for entry in data:
+            if entry.get("class", "") == "Course Policy/Format":
+                text = entry.get("text", "").strip()
+                if not text:
+                    continue
+                input.append(text)
+    return input

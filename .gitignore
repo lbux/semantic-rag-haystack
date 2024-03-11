@@ -1,9 +1,17 @@
+# Compiled source #
+*.pyc
+
+# Model files and ChromaDB data #
 *.gguf
 *.bin
 *.sqlite3
+
+
+# Supported ingest files #
 *.pdf
 *.txt
 *.docx
 *.doc
-*.pyc
+
+# Serialized data #
 *json
