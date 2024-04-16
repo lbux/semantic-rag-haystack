@@ -4,6 +4,7 @@ from getpass import getpass
 
 from haystack import Pipeline
 from haystack_integrations.components.evaluators.uptrain import UpTrainEvaluator
+from haystack_integrations.components.evaluators.ragas import RagasEvaluator
 
 from constants import *
 from utils import (
@@ -12,12 +13,22 @@ from utils import (
     serialize_evaluation_results,
 )
 
+from getpass import getpass
+
+from haystack_integrations.components.evaluators.uptrain import UpTrainEvaluator
+
 os.environ["OPENAI_API_KEY"] = getpass("Enter your OpenAI API key: ")
 
-evaluator = UpTrainEvaluator(metric=DEFAULT_METRIC, api="openai")
+evaluator_uptrain = UpTrainEvaluator(
+    metric=DEFAULT_UPTRAIN_METRIC,
+    api="openai"
+)
+
+# we do nothing with ragas eval for now
+evaluator_ragas = RagasEvaluator(metric=DEFAULT_RAGAS_METRIC)
 
 evaluator_pipeline = Pipeline()
-evaluator_pipeline.add_component("evaluator", evaluator)
+evaluator_pipeline.add_component("evaluator", evaluator_uptrain)
 
 parser = argparse.ArgumentParser()
 parser.add_argument("file_name", help="The name of the file to be evaluated")
@@ -29,7 +40,7 @@ queries, documents, answers, staff_answers = read_serialized_generated_answer(
 )
 
 evaluation_paramaters = metric_to_params(
-    DEFAULT_METRIC,
+    DEFAULT_UPTRAIN_METRIC,
     {
         "questions": queries,
         "contexts": documents,

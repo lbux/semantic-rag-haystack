@@ -1,6 +1,9 @@
 from haystack_integrations.components.evaluators.uptrain import UpTrainMetric
+from haystack_integrations.components.evaluators.ragas import RagasMetric
 
-DEFAULT_METRIC = UpTrainMetric.FACTUAL_ACCURACY
+DEFAULT_UPTRAIN_METRIC = UpTrainMetric.FACTUAL_ACCURACY
+
+DEFAULT_RAGAS_METRIC = RagasMetric.FAITHFULNESS
 
 MODEL_NAME = "WizardLM-2-7B.Q8_0.gguf"
 
