@@ -1,14 +1,15 @@
 import os
+
 from haystack import Pipeline
 from haystack.components.converters import (
-    PyPDFToDocument,
     MarkdownToDocument,
+    PyPDFToDocument,
     TextFileToDocument,
 )
-from haystack.components.preprocessors import DocumentSplitter, DocumentCleaner
-from haystack.components.routers import FileTypeRouter
-from haystack.components.joiners import DocumentJoiner
 from haystack.components.embedders import SentenceTransformersDocumentEmbedder
+from haystack.components.joiners import DocumentJoiner
+from haystack.components.preprocessors import DocumentCleaner, DocumentSplitter
+from haystack.components.routers import FileTypeRouter
 from haystack.components.writers import DocumentWriter
 from haystack_integrations.document_stores.chroma import ChromaDocumentStore
 

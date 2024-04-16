@@ -1,5 +1,6 @@
-from dataclasses import asdict
 import json
+import time
+from dataclasses import asdict
 
 from haystack_integrations.components.evaluators.uptrain import UpTrainMetric
 
@@ -34,27 +35,31 @@ def serialize_generated_answer(results):
 
     for result in results:
         staff_answer = result["staff_answer"]
-        generated_answers = result["generated_answer"].get("answer_builder", {}).get("answers", [])
+        generated_answers = (
+            result["generated_answer"].get("answer_builder", {}).get("answers", [])
+        )
 
         for generated_answer in generated_answers:
             answer_dict = asdict(generated_answer)
-            answer_dict["staff_answer"] = staff_answer 
+            answer_dict["staff_answer"] = staff_answer
             if "documents" in answer_dict:
-                answer_dict["documents"] = [asdict(doc) for doc in generated_answer.documents]
+                answer_dict["documents"] = [
+                    asdict(doc) for doc in generated_answer.documents
+                ]
             serialized_data.append(answer_dict)
 
-    with open("serialized_generated_data.json", "w", encoding="utf-8") as f:
+    file_name = time.strftime("generated_data_%Y-%m-%d_%H-%M-%S.json")
+    with open(file_name, "w", encoding="utf-8") as f:
         json.dump(serialized_data, f, ensure_ascii=False, indent=2)
 
 
-
-def read_serialized_generated_answer():
+def read_serialized_generated_answer(file_name):
     queries = []
     documents = []
     answers = []
     staff_answers = []
 
-    with open("serialized_generated_data.json", "r", encoding="utf-8") as f:
+    with open(file_name, "r", encoding="utf-8") as f:
         serialized_data = json.load(f)
         for entry in serialized_data:
             query = entry.get("query", "")
@@ -81,8 +86,10 @@ def metric_to_params(metric, data):
 
 
 def serialize_evaluation_results(evaluation_results):
-    with open("serialized_evaluation_results.json", "w", encoding="utf-8") as f:
+    file_name = time.strftime("evaluation_results_%Y-%m-%d_%H-%M-%S.json")
+    with open(file_name, "w", encoding="utf-8") as f:
         json.dump(evaluation_results, f, ensure_ascii=False, indent=2)
+
 
 def read_input_json(file_name):
     qa_pairs = []
@@ -108,4 +115,3 @@ def read_input_json(file_name):
                 qa_pairs.append({"question": question, "staff_answer": staff_answer})
 
     return qa_pairs
-

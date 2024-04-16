@@ -1,12 +1,12 @@
 from haystack import Pipeline
-from haystack.components.builders import PromptBuilder, AnswerBuilder
+from haystack.components.builders import AnswerBuilder, PromptBuilder
 from haystack.components.embedders import SentenceTransformersTextEmbedder
+from haystack.components.rankers import TransformersSimilarityRanker
 from haystack_integrations.components.generators.llama_cpp import LlamaCppGenerator
 from haystack_integrations.components.retrievers.chroma import ChromaEmbeddingRetriever
 from haystack_integrations.document_stores.chroma import ChromaDocumentStore
-from haystack.components.rankers import TransformersSimilarityRanker
 
-from utils import serialize_generated_answer, read_input_json
+from utils import read_input_json, serialize_generated_answer
 
 chat_template = """
 You are a teaching assistant for a course on Data Management.
@@ -28,7 +28,7 @@ Answer:
 """
 
 generator = LlamaCppGenerator(
-    model="models/mistral-7b-instruct-v0.2.Q8_0.gguf",
+    model="models/WizardLM-2-7B.Q8_0.gguf",
     n_ctx=12000,
     model_kwargs={"n_gpu_layers": -1},
     generation_kwargs={
