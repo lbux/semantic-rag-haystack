@@ -19,10 +19,7 @@ from haystack_integrations.components.evaluators.uptrain import UpTrainEvaluator
 
 os.environ["OPENAI_API_KEY"] = getpass("Enter your OpenAI API key: ")
 
-evaluator_uptrain = UpTrainEvaluator(
-    metric=DEFAULT_UPTRAIN_METRIC,
-    api="openai"
-)
+evaluator_uptrain = UpTrainEvaluator(metric=DEFAULT_UPTRAIN_METRIC, api="openai")
 
 # we do nothing with ragas eval for now
 evaluator_ragas = RagasEvaluator(metric=DEFAULT_RAGAS_METRIC)

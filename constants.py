@@ -1,5 +1,5 @@
-from haystack_integrations.components.evaluators.uptrain import UpTrainMetric
 from haystack_integrations.components.evaluators.ragas import RagasMetric
+from haystack_integrations.components.evaluators.uptrain import UpTrainMetric
 
 DEFAULT_UPTRAIN_METRIC = UpTrainMetric.FACTUAL_ACCURACY
 
