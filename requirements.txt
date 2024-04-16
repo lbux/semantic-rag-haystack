@@ -1,6 +1,7 @@
 haystack-ai
 chroma-haystack
 uptrain-haystack
+ragas-haystack
 pypdf
 markdown-it-py
 mdit_plain
