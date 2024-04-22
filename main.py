@@ -38,14 +38,14 @@ Answer:
 
 generator = LlamaCppGenerator(
     model="models/Meta-Llama-3-8B-Instruct.Q8_0.gguf",
-    n_ctx=8000,
-    model_kwargs={"n_gpu_layers": -1},
+    n_ctx=2048,
+    n_batch=512,
+    model_kwargs={"n_gpu_layers": -1, "n_predict": -1},
     generation_kwargs={
         "max_tokens": 200,
         "temperature": 0.8,
-        "repeat_penalty": 1.1,
         "top_k": 40,
-        "top_p": 0.9,
+        "top_p": 0.5,
     },
 )
 

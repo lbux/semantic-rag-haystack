@@ -1,4 +1,5 @@
 import json
+import os
 import time
 from dataclasses import asdict
 
@@ -49,7 +50,8 @@ def serialize_generated_answer(results):
             serialized_data.append(answer_dict)
 
     file_name = time.strftime("generated_data_%Y-%m-%d_%H-%M-%S.json")
-    with open(file_name, "w", encoding="utf-8") as f:
+    file_path = os.path.join("documents/generation_output", file_name)
+    with open(file_path, "w", encoding="utf-8") as f:
         json.dump(serialized_data, f, ensure_ascii=False, indent=2)
 
 
@@ -59,7 +61,9 @@ def read_serialized_generated_answer(file_name):
     answers = []
     staff_answers = []
 
-    with open(file_name, "r", encoding="utf-8") as f:
+    file_path = os.path.join("documents/generation_output", file_name)
+
+    with open(file_path, "r", encoding="utf-8") as f:
         serialized_data = json.load(f)
         for entry in serialized_data:
             query = entry.get("query", "")
@@ -87,7 +91,8 @@ def metric_to_params(metric, data):
 
 def serialize_evaluation_results(evaluation_results):
     file_name = time.strftime("evaluation_results_%Y-%m-%d_%H-%M-%S.json")
-    with open(file_name, "w", encoding="utf-8") as f:
+    file_path = os.path.join("documents/evaluation_output", file_name)
+    with open(file_path, "w", encoding="utf-8") as f:
         json.dump(evaluation_results, f, ensure_ascii=False, indent=2)
 
 
