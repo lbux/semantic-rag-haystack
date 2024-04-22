@@ -3,8 +3,8 @@ import os
 from getpass import getpass
 
 from haystack import Pipeline
-from haystack_integrations.components.evaluators.uptrain import UpTrainEvaluator
 from haystack_integrations.components.evaluators.ragas import RagasEvaluator
+from haystack_integrations.components.evaluators.uptrain import UpTrainEvaluator
 
 from constants import *
 from utils import (
@@ -12,10 +12,6 @@ from utils import (
     read_serialized_generated_answer,
     serialize_evaluation_results,
 )
-
-from getpass import getpass
-
-from haystack_integrations.components.evaluators.uptrain import UpTrainEvaluator
 
 os.environ["OPENAI_API_KEY"] = getpass("Enter your OpenAI API key: ")
 
@@ -26,6 +22,9 @@ evaluator_ragas = RagasEvaluator(metric=DEFAULT_RAGAS_METRIC)
 
 evaluator_pipeline = Pipeline()
 evaluator_pipeline.add_component("evaluator", evaluator_uptrain)
+
+evaluator_pipeline.draw("visual_design/evaluator_pipeline.png")
+
 
 parser = argparse.ArgumentParser()
 parser.add_argument("file_name", help="The name of the file to be evaluated")
@@ -46,7 +45,6 @@ evaluation_paramaters = metric_to_params(
     },
 )
 
-evaluator_pipeline.draw("evaluator_pipeline.png")
 
 evaluation_results = evaluator_pipeline.run(evaluation_paramaters)
 

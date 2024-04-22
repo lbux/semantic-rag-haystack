@@ -13,7 +13,7 @@ from haystack.components.routers import FileTypeRouter
 from haystack.components.writers import DocumentWriter
 from haystack_integrations.document_stores.chroma import ChromaDocumentStore
 
-folder_path = "source_documents"
+folder_path = "documents/source_documents"
 
 source_documents_folder = [
     os.path.join(folder_path, f)
@@ -60,5 +60,5 @@ ingest_pipeline.connect("document_cleaner", "document_splitter")
 ingest_pipeline.connect("document_splitter", "document_embedder")
 ingest_pipeline.connect("document_embedder", "document_writer")
 
-ingest_pipeline.draw("ingest_pipeline.png")
+ingest_pipeline.draw("visual_design/ingest_pipeline.png")
 ingest_pipeline.run({"file_type_router": {"sources": source_documents_folder}})

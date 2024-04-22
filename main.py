@@ -9,36 +9,43 @@ from haystack_integrations.document_stores.chroma import ChromaDocumentStore
 from utils import read_input_json, serialize_generated_answer
 
 chat_template = """
-You are a teaching assistant for a course on Data Management.
-You will be provided with queries from students that have been posted on a discussion board, EdDiscussion.
-You will answer the queries using the data in the syllabus.
-If you can not find the answer only using the syllabus, do not provide an answer.
+<|begin_of_text|><|start_header_id|>system<|end_header_id|>
+
+You are a teaching assistant for a class.
+You are responsible for answering student questions using the syllabus provided as context.
+If there is a question you are unable to answer, please let the student know that you will get back to them with an answer as soon as possible.
+Reply with an informal tone. This is not an email. You are speaking with peers.
+Please provide a helpful and informative response.
 
 Here is an example of the expected answer based on a query:
 
 QUERY: "Are we able to use private edStem posts to contact you or is email preferred?"
 ANSWER: "Yes, you can use private edStem posts or email to contact us. Also, there is a section in the syllabus describing how/where to contact us that you may find helpful."
 
+
 Context:
 {% for doc in documents %}
-  {{ doc.content }}
+{{ doc.content }}
 {% endfor %}
+<|start_header_id|>
+
+<eot_id>4<start_headerid|>user<|end_header_id|>
 query: {{query}}
+<|eot_id|><|start_header_id|>assistant<|end_header_id|>
 Answer:
 """
 
+
 generator = LlamaCppGenerator(
-    model="models/WizardLM-2-7B.Q8_0.gguf",
-    n_ctx=12000,
+    model="models/Meta-Llama-3-8B-Instruct.Q8_0.gguf",
+    n_ctx=8000,
     model_kwargs={"n_gpu_layers": -1},
     generation_kwargs={
-        # i pulled these from a random reddit post lol
-        # but they seem to work well?
-        "max_tokens": 128,
-        "temperature": 0.7,
-        "repeat_penalty": 1.176,
+        "max_tokens": 200,
+        "temperature": 0.8,
+        "repeat_penalty": 1.1,
         "top_k": 40,
-        "top_p": 0.1,
+        "top_p": 0.9,
     },
 )
 
@@ -71,9 +78,9 @@ rag_pipeline.connect("llm.meta", "answer_builder.meta")
 rag_pipeline.connect("embedder_retriever", "answer_builder.documents")
 
 
-rag_pipeline.draw("rag_pipeline.png")
+rag_pipeline.draw("visual_design/rag_pipeline.png")
 
-prompts = read_input_json("spring22.json")
+prompts = read_input_json("documents/input/spring22.json")
 results = []
 for prompt_dict in prompts:
     question = prompt_dict["question"]
