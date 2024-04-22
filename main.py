@@ -45,7 +45,7 @@ generator = LlamaCppGenerator(
         "max_tokens": 200,
         "temperature": 0.8,
         "top_k": 40,
-        "top_p": 0.5,
+        "top_p": 0.9,
     },
 )
 
