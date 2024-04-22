@@ -27,9 +27,7 @@ Context:
 {% for doc in documents %}
 {{ doc.content }}
 {% endfor %}
-<|start_header_id|>
-
-<eot_id>4<start_headerid|>user<|end_header_id|>
+<eot_id><start_header_id|>user<|end_header_id|>
 query: {{query}}
 <|eot_id|><|start_header_id|>assistant<|end_header_id|>
 Answer:
