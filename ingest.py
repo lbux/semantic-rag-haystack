@@ -1,5 +1,6 @@
 import os
 
+import torch
 from haystack import Pipeline
 from haystack.components.converters import (
     MarkdownToDocument,
@@ -14,6 +15,8 @@ from haystack.components.writers import DocumentWriter
 from haystack.utils import ComponentDevice
 from haystack_integrations.document_stores.chroma import ChromaDocumentStore
 
+device = "cuda:0" if torch.cuda.is_available() else "cpu"
+
 folder_path = "documents/source_documents"
 
 source_documents_folder = [
@@ -22,18 +25,19 @@ source_documents_folder = [
     if os.path.isfile(os.path.join(folder_path, f))
 ]
 
-
 document_store = ChromaDocumentStore(persist_path="chromaDB")
 
 ingest_pipeline = Pipeline()
 
 ingest_pipeline.add_component("pdf_converter", PyPDFToDocument())
+
 ingest_pipeline.add_component(
     "document_embedder",
     SentenceTransformersDocumentEmbedder(
-        model="hkunlp/instructor-large", device=ComponentDevice.from_str("cuda:0")
+        model="hkunlp/instructor-large", device=ComponentDevice.from_str(device)
     ),
 )
+
 ingest_pipeline.add_component(
     "document_writer", DocumentWriter(document_store=document_store)
 )
