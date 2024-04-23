@@ -6,4 +6,4 @@ pypdf
 markdown-it-py
 mdit_plain
 sentence-transformers
-transformers[torch,sentencepiece]
+transformers[sentencepiece]
