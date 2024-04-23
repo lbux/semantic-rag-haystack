@@ -11,6 +11,7 @@ from haystack.components.joiners import DocumentJoiner
 from haystack.components.preprocessors import DocumentCleaner, DocumentSplitter
 from haystack.components.routers import FileTypeRouter
 from haystack.components.writers import DocumentWriter
+from haystack.utils import ComponentDevice
 from haystack_integrations.document_stores.chroma import ChromaDocumentStore
 
 folder_path = "documents/source_documents"
@@ -29,7 +30,9 @@ ingest_pipeline = Pipeline()
 ingest_pipeline.add_component("pdf_converter", PyPDFToDocument())
 ingest_pipeline.add_component(
     "document_embedder",
-    SentenceTransformersDocumentEmbedder(model="hkunlp/instructor-large"),
+    SentenceTransformersDocumentEmbedder(
+        model="hkunlp/instructor-large", device=ComponentDevice.from_str("cuda:0")
+    ),
 )
 ingest_pipeline.add_component(
     "document_writer", DocumentWriter(document_store=document_store)

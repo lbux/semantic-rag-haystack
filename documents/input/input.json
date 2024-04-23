@@ -1,0 +1,22 @@
+[
+    {
+        "class": "Course Policy/Format",
+        "text": "What is the attendance policy?",
+        "answers": [
+            {
+                "user": {"role": "staff"},
+                "text": "Attendance is mandatory and will be checked every class."
+            }
+        ]
+    },
+    {
+        "class": "Course Policy/Format",
+        "text": "How will the grading be handled?",
+        "answers": [
+            {
+                "user": {"role": "staff"},
+                "text": "Grading is based on assignments, midterm, and final exams."
+            }
+        ]
+    }
+]

@@ -11,16 +11,7 @@ from utils import read_input_json, serialize_generated_answer
 chat_template = """
 <|begin_of_text|><|start_header_id|>system<|end_header_id|>
 
-You are a teaching assistant for a class.
-You are responsible for answering student questions using the syllabus provided as context.
-If there is a question you are unable to answer, please let the student know that you will get back to them with an answer as soon as possible.
-Reply with an informal tone. This is not an email. You are speaking with peers.
-Please provide a helpful and informative response.
-
-Here is an example of the expected answer based on a query:
-
-QUERY: "Are we able to use private edStem posts to contact you or is email preferred?"
-ANSWER: "Yes, you can use private edStem posts or email to contact us. Also, there is a section in the syllabus describing how/where to contact us that you may find helpful."
+Answer the provided query using the following documents as context while speaking like a pirate:
 
 
 Context:
@@ -78,7 +69,7 @@ rag_pipeline.connect("embedder_retriever", "answer_builder.documents")
 
 rag_pipeline.draw("visual_design/rag_pipeline.png")
 
-prompts = read_input_json("documents/input/spring22.json")
+prompts = read_input_json("documents/input/input.json")
 results = []
 for prompt_dict in prompts:
     question = prompt_dict["question"]

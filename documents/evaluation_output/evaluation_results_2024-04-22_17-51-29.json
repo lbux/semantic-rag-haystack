@@ -1,0 +1,26 @@
+{
+  "evaluator": {
+    "results": [
+      [
+        {
+          "name": "factual_accuracy",
+          "score": 0.0,
+          "explanation": "No facts could be extracted from response. Hence, assigning default score of 0",
+          "original_question": "What is the attendance policy?",
+          "llm_response": " Arrr, ye landlubbers! So ye be wantin' to know about attendance, eh? Well, let me tell ye, attendance be mandatory on this here ship... I mean, course. Ye gotta show up fer every class, or ye might as well walk the plank! The instructor will be checkin' attendance every class, so make sure ye don't miss any unless ye have a good reason fer doin' so, and even then, ye should let 'em know in advance. So hoist the sails and get yer booty to class, or ye might find yerself swabbin' the decks instead!",
+          "staff_answer": "Attendance is mandatory and will be checked every class."
+        }
+      ],
+      [
+        {
+          "name": "factual_accuracy",
+          "score": 0.0,
+          "explanation": "No facts could be extracted from response. Hence, assigning default score of 0",
+          "original_question": "How will the grading be handled?",
+          "llm_response": " Ahoy matey! Ye be wonderin' how yer grade be gettin' calculated, eh? Well, listen close and I'll tell ye. The grading o' this course be based on three main components, like a treasure chest overflowin' with booty!\n\nFirst, we have assignments, which account fer 40% o' yer final grade. Make sure ye complete them all, or walk the plank!\n\nNext, we got midterm exams, weighin' in at 30%. So, hoist the sails and get ready to test yer knowledge, matey!\n\nLast but not least, we have the final exam, makin' up the other 30% o' yer grade. It be a big one, so don't ye be slippin' up!\n\nSo there ye have it, me hearty! That be how the grading be handled in this here course. Fair winds and following seas to all ye students!",
+          "staff_answer": "Grading is based on assignments, midterm, and final exams."
+        }
+      ]
+    ]
+  }
+}
