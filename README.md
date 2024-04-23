@@ -72,12 +72,12 @@ pip install llama-cpp-haystack
 
 To utilize GPU acceleration in certain tasks, it is recommended to install PyTorch with CUDA support. You can install the appropriate version of `torch` for your CUDA version by following the instructions on the [official PyTorch website](https://pytorch.org/get-started/locally/).
 
----
-
 ### Additional Notes:
 
 - Replace `ENVNAME` with your preferred environment name.
 - While using Conda is not required, it is highly recommended for managing dependencies and ensuring consistent environments.
+
+---
 
 ## First Run Instructions
 
@@ -110,7 +110,6 @@ To get started with the project, follow these steps:
 
 ## Subsequent Runs
 
-## Subsequent Runs
 
 - **Adding Documents:** If you add new documents to `/source_documents`, delete the `example.pdf` file (if present), and the `/chromaDB` folder, then rerun the `ingest.py` script to process these new documents.
 - **After Ingestion:** Following any run of `ingest.py`, rerun `main.py` and `evaluator.py` to ensure that your answers and evaluations are up-to-date with the latest document set. Ensure the `main.py` outputs are correctly named for use in `evaluator.py`.
