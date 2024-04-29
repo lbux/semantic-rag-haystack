@@ -5,22 +5,16 @@
 *.gguf
 *.bin
 *.sqlite3
-!/chromaDB/chroma.sqlite3
-!/chromaDB/23c9efa8-e5d2-443b-b5b6-722746579ab7/data_level0.bin
-!/chromaDB/23c9efa8-e5d2-443b-b5b6-722746579ab7/header.bin
-!/chromaDB/23c9efa8-e5d2-443b-b5b6-722746579ab7/length.bin
-!/chromaDB/23c9efa8-e5d2-443b-b5b6-722746579ab7/link_lists.bin
 
 
 # Supported ingest files #
 *.pdf
-!/documents/source_documents/example.pdf
 *.txt
 *.docx
 *.doc
 
 # Serialized data #
 *json
-!/documents/input/input.json
-!/documents/evaluation_output/evaluation_results_2024-04-22_17-51-29.json
-!/documents/generation_output/generated_data_2024-04-22_17-46-28.json
+
+# Api keys #
+*.deepeval

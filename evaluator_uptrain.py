@@ -1,26 +1,22 @@
-from uptrain import EvalLLM, Evals, ResponseMatching, Settings
+# Abandoned code for evaluating the generated data using the uptrain library
 
-from utils import read_serialized_generated_answer, serialize_evaluation_results
+import json
+import re
+
+from uptrain import EvalLLM, Evals, RcaTemplate, ResponseMatching, Settings
+
+from utils import read_serialized_generated_answer
 
 queries, documents, answers, staff_answers = read_serialized_generated_answer(
-    "documents\generation_output\input.json"
+    "generated_data_2024-04-25_21-26-25.json"
 )
 
-data = [
-    {
-        "question": queries[3],
-        "response": answers[3],
-        "ground_truth": staff_answers[3],
-    }
-]
+data = []
 
 settings = Settings(model="ollama/llama3")
 eval_llm = EvalLLM(settings=settings)
 
-results = eval_llm.evaluate(
-    project_name="local test",
-    data=data,
-    checks=[ResponseMatching(method="llm")],
-)
+results = eval_llm.evaluate(data=data, checks=[Evals.CONTEXT_RELEVANCE])
 
-print(results)
+with open("documents\evaluation_output\output.json", "w") as f:
+    f.write(json.dumps(results, indent=4))

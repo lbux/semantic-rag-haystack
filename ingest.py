@@ -12,6 +12,7 @@ from haystack.components.joiners import DocumentJoiner
 from haystack.components.preprocessors import DocumentCleaner, DocumentSplitter
 from haystack.components.routers import FileTypeRouter
 from haystack.components.writers import DocumentWriter
+from haystack.document_stores.types import DuplicatePolicy
 from haystack.utils import ComponentDevice
 from haystack_integrations.document_stores.chroma import ChromaDocumentStore
 
@@ -34,13 +35,15 @@ ingest_pipeline.add_component("pdf_converter", PyPDFToDocument())
 ingest_pipeline.add_component(
     "document_embedder",
     SentenceTransformersDocumentEmbedder(
-        model="hkunlp/instructor-large", device=ComponentDevice.from_str(device)
+        model="sentence-transformers/all-mpnet-base-v2", device=ComponentDevice(device)
     ),
 )
 
 ingest_pipeline.add_component(
-    "document_writer", DocumentWriter(document_store=document_store)
+    "document_writer",
+    DocumentWriter(document_store=document_store, policy=DuplicatePolicy.OVERWRITE),
 )
+
 
 ingest_pipeline.add_component(
     "file_type_router",
@@ -48,7 +51,7 @@ ingest_pipeline.add_component(
 )
 ingest_pipeline.add_component(
     "document_splitter",
-    DocumentSplitter(split_by="sentence", split_length=2, split_overlap=0),
+    DocumentSplitter(),
 )
 ingest_pipeline.add_component("document_cleaner", DocumentCleaner())
 ingest_pipeline.add_component("document_joiner", DocumentJoiner())
@@ -69,3 +72,4 @@ ingest_pipeline.connect("document_embedder", "document_writer")
 
 ingest_pipeline.draw("visual_design/ingest_pipeline.png")
 ingest_pipeline.run({"file_type_router": {"sources": source_documents_folder}})
+print(document_store.count_documents())
