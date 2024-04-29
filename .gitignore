@@ -14,7 +14,7 @@
 *.doc
 
 # Serialized data #
-*json
+*.json
 
 # Api keys #
 *.deepeval
