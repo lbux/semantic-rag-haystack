@@ -112,6 +112,6 @@ To get started with the project, follow these steps:
 
 
 - **Adding Documents:** If you add new documents to `/source_documents`, delete the `example.pdf` file (if present), and the `/chromaDB` folder, then rerun the `ingest.py` script to process these new documents.
-- **After Ingestion:** Following any run of `ingest.py`, rerun `evaluate.py` and `evaluator.py` to ensure that your answers and evaluations are up-to-date with the latest document set. Ensure the `evaluate.py` outputs are correctly named for use in `evaluator.py`.
-- **Changes to `evaluate.py`:** If you make modifications only in `evaluate.py`, it necessitates a rerun of `evaluator.py` to evaluate any new or altered prompts. Be sure to pass the appropriate file name from `/documents/generation_output` to `evaluator.py`.
+- **After Ingestion:** Following any run of `ingest.py`, rerun `generate.py` and `evaluator.py` to ensure that your answers and evaluations are up-to-date with the latest document set. Ensure the `generate.py` outputs are correctly named for use in `evaluator.py`.
+- **Changes to `generate.py`:** If you make modifications only in `generate.py`, it necessitates a rerun of `evaluator.py` to evaluate any new or altered prompts. Be sure to pass the appropriate file name from `/documents/generation_output` to `evaluator.py`.
 - **Modifying Evaluation Metrics:** Should there be any changes to the evaluation metric in `evaluator.py`, rerunning `evaluator.py` alone suffices to apply these changes to your evaluation results. Ensure you provide the correct input file name to `evaluator.py`.
