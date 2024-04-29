@@ -98,9 +98,9 @@ To get started with the project, follow these steps:
 5. **Generate Answers from Prompts:** Execute the following command to generate answers from `input.json` in `/documents/input`. The results will be serialized and saved in `/documents/generation_output`:
 
    ```bash
-   python main.py
+   python generate.py
    ```
-6. **Evaluate LLM Answers:**
+6. **Evaluate LLM Answers: (CURRENTLY NOT WORKING)**
    Finally, run the evaluator script. You'll be prompted to provide your `OPENAI_API_KEY` for this step. This script evaluates LLM answers to prompts, and the results will be serialized in `/documents/evaluation_output`:
 
    ```bash
@@ -112,6 +112,6 @@ To get started with the project, follow these steps:
 
 
 - **Adding Documents:** If you add new documents to `/source_documents`, delete the `example.pdf` file (if present), and the `/chromaDB` folder, then rerun the `ingest.py` script to process these new documents.
-- **After Ingestion:** Following any run of `ingest.py`, rerun `main.py` and `evaluator.py` to ensure that your answers and evaluations are up-to-date with the latest document set. Ensure the `main.py` outputs are correctly named for use in `evaluator.py`.
-- **Changes to `main.py`:** If you make modifications only in `main.py`, it necessitates a rerun of `evaluator.py` to evaluate any new or altered prompts. Be sure to pass the appropriate file name from `/documents/generation_output` to `evaluator.py`.
+- **After Ingestion:** Following any run of `ingest.py`, rerun `evaluate.py` and `evaluator.py` to ensure that your answers and evaluations are up-to-date with the latest document set. Ensure the `evaluate.py` outputs are correctly named for use in `evaluator.py`.
+- **Changes to `evaluate.py`:** If you make modifications only in `evaluate.py`, it necessitates a rerun of `evaluator.py` to evaluate any new or altered prompts. Be sure to pass the appropriate file name from `/documents/generation_output` to `evaluator.py`.
 - **Modifying Evaluation Metrics:** Should there be any changes to the evaluation metric in `evaluator.py`, rerunning `evaluator.py` alone suffices to apply these changes to your evaluation results. Ensure you provide the correct input file name to `evaluator.py`.
