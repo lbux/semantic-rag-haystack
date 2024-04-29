@@ -8,6 +8,40 @@ from haystack_integrations.document_stores.chroma import ChromaDocumentStore
 
 from utils import read_input_json, serialize_generated_answer
 
+
+#Gradient Embedder
+import os 
+from haystack.document_stores.in_memory import InMemoryDocumentStore
+from haystack.components.retrievers.in_memory import InMemoryEmbeddingRetriever
+from haystack.components.builders import PromptBuilder
+from haystack.components.generators import HuggingFaceTGIGenerator
+from gradient_haystack.embedders.gradient_text_embedder import GradientTextEmbedder
+
+
+document_store = InMemoryDocumentStore()
+prompt_gradient = """ Answer the query, based on the
+content in the documents.
+
+Documents:
+{% for doc in documents %}
+  {{doc.content}}
+{% endfor %}
+
+Query: {{query}}
+"""
+
+os.environ["GRADIENT_ACCESS_TOKEN"]="YOUR_GRADIENT_ACCESS_TOKEN"
+os.environ["GRADIENT_WORKSPACE_ID"]="GRADIENT_WORKSPACE_ID"
+
+text_embedder_gradient = GradientDocumentEmbedder()
+retriever_gradient = InMemoryEmbeddingRetriever(document_store=document_store)
+prompt_builder = PromptBuilder(template=prompt_gradient)
+generator_HuggingFaceTGI = HuggingFaceTGIGenerator(model="mistralai/Mistral-7B-v0.1", 
+									                token="YOUR_HUGGINGFACE_TOKEN")
+generator_HuggingFaceTGI.warm_up()
+
+
+
 chat_template = """
 <|begin_of_text|><|start_header_id|>system<|end_header_id|>
 
@@ -25,7 +59,7 @@ Answer:
 """
 
 
-generator = LlamaCppGenerator(
+generator_Llama = LlamaCppGenerator(
     model="models/Meta-Llama-3-8B-Instruct.Q8_0.gguf",
     n_ctx=2048,
     n_batch=512,
@@ -38,23 +72,36 @@ generator = LlamaCppGenerator(
     },
 )
 
-text_embedder = SentenceTransformersTextEmbedder(model="hkunlp/instructor-large")
+text_embedder_STTE = SentenceTransformersTextEmbedder(model="hkunlp/instructor-large")
 
-generator.warm_up()
-text_embedder.warm_up()
+generator_Llama.warm_up()
+text_embedder_STTE.warm_up()
 
 document_store = ChromaDocumentStore(persist_path="chromaDB")
 
 
 rag_pipeline = Pipeline()
-rag_pipeline.add_component("text_embedder", text_embedder)
+
+"""
+For Gradient
+rag_pipeline.add_component(instance=text_embedder, name="text_embedder")
+rag_pipeline.add_component(instance=retriever, name="retriever")
+rag_pipeline.add_component(instance=prompt_builder, name="prompt_builder")
+rag_pipeline.add_component(instance=generator, name="generator")
+
+rag_pipeline.connect("text_embedder", "retriever")
+rag_pipeline.connect("retriever.documents", "prompt_builder.documents")
+rag_pipeline.connect("prompt_builder", "generator")
+"""
+
+rag_pipeline.add_component("text_embedder", text_embedder_STTE)
 rag_pipeline.add_component(
     "embedder_retriever",
     ChromaEmbeddingRetriever(document_store=document_store, top_k=5),
 )
 rag_pipeline.add_component("ranker", TransformersSimilarityRanker())
 rag_pipeline.add_component("prompt_builder", PromptBuilder(template=chat_template))
-rag_pipeline.add_component("llm", generator)
+rag_pipeline.add_component("llm", generator_Llama)
 rag_pipeline.add_component("answer_builder", AnswerBuilder())
 
 

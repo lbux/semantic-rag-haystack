@@ -7,3 +7,4 @@ markdown-it-py
 mdit_plain
 sentence-transformers
 transformers[torch, sentencepiece]
+gradient-haystack
