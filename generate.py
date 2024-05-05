@@ -118,5 +118,3 @@ for prompt_dict in prompts:
     results.append(result_with_original)
 
 serialize_generated_answer(results)
-
-serialize_generated_answer(results)
