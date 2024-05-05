@@ -36,7 +36,7 @@ Answer:
 # lots of these parameters can have a significant impact
 # it is best to read up on the parameters before changing them
 generator = LlamaCppGenerator(
-    model="models/Meta-Llama-3-8B-Instruct.Q8_0.gguf",
+    model="models/Meta-Llama-3-8B-Instruct-Q8_0.gguf",
     n_batch=512,
     model_kwargs={"n_gpu_layers": -1, "n_predict": -1},
     generation_kwargs={
@@ -76,7 +76,7 @@ rag_pipeline.add_component(
 rag_pipeline.add_component(
     "ranker",
     TransformersSimilarityRanker(
-        model="cross-encoder/ms-marco-MiniLM-L-", device=ComponentDevice(device)
+        model="cross-encoder/ms-marco-MiniLM-L-12-v2", device=ComponentDevice(device)
     ),
 )
 rag_pipeline.add_component("prompt_builder", PromptBuilder(template=chat_template))
@@ -99,6 +99,10 @@ rag_pipeline.draw("visual_design/rag_pipeline.png")
 prompts = read_input_json("documents/input/input.json")
 results = []
 for prompt_dict in prompts:
+    # let's only do the first prompt for now
+    if len(results) == 1:
+        break
+
     question = prompt_dict["question"]
     answer = prompt_dict["answer"]
     # run the pipeline with the question as the input
@@ -112,5 +116,7 @@ for prompt_dict in prompts:
     )
     result_with_original = {"answer": answer, "generated_answer": result}
     results.append(result_with_original)
+
+serialize_generated_answer(results)
 
 serialize_generated_answer(results)
