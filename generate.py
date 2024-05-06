@@ -18,9 +18,17 @@ device = "cuda:0" if torch.cuda.is_available() else "cpu"
 chat_template = """
 <|begin_of_text|><|start_header_id|>system<|end_header_id|>
 
-Answer the query from the context provided.
-If it is possible to answer the question from the context, copy the answer from the context.
-If the answer in the context isn't a complete sentence, make it one.
+Use the context provided below to generate a concise and accurate answer to the query. 
+If the context does not contain enough information to provide a reliable answer, 
+respond with: "I cannot answer this question with the context provided." and nothing else.
+
+Example 1:
+Query: I think I received an incorrect grade for my homework. Can I have someone review it again?
+Answer: Provided that 5 days has not passed since the grade was posted, you can request a regrade on EdDiscussion by making a private post.
+
+Example 2:
+Query: Do you recommend I take CS 161 if I plan to go to grad school?
+Answer: I cannot answer this question with the context provided.
 
 Context:
 {% for doc in documents %}
@@ -99,10 +107,9 @@ rag_pipeline.draw("visual_design/rag_pipeline.png")
 prompts = read_input_json("documents/input/input.json")
 results = []
 for prompt_dict in prompts:
-    # let's only do the first prompt for now
-    if len(results) == 1:
+    # only doing first 3 to test
+    if len(results) > 3:
         break
-
     question = prompt_dict["question"]
     answer = prompt_dict["answer"]
     # run the pipeline with the question as the input

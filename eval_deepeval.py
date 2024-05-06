@@ -40,8 +40,9 @@ class LlamaCppModel(DeepEvalBaseLLM):
             use_mmap=True,
             verbose=True,
             chat_format="llama-3",
-            n_ctx=8000,
+            n_ctx=8092,
             n_gpu_layers=-1,
+            verbose=True,
         )
         super().__init__()
 
@@ -84,6 +85,9 @@ contextual_relevancy = ContextualRelevancyMetric(
 )
 
 # Defining the generation metrics
+# Json constraint might not working for this??
+# We need to modify the json schena but in such a way that the schema
+# changes based on metric type. How do we do this?
 answer_relevancy = AnswerRelevancyMetric(
     threshold=0.5, model=llama3, include_reason=True, async_mode=True
 )
@@ -116,6 +120,7 @@ def rag_evaluation(query, documents, answers, staff_answers):
         ],
         ignore_errors=True,
         print_results=True,
+        run_async=True,
     )
     return results
 
