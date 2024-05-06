@@ -49,7 +49,10 @@ generator = LlamaCppGenerator(
     model_kwargs={"n_gpu_layers": -1, "n_predict": -1},
     generation_kwargs={
         "max_tokens": 200,
-        "temperature": 0.8,
+        # drastically lower the temperatur.
+        # the results seem a better?
+        # we should test this
+        "temperature": 0.4,
         "top_k": 40,
         "top_p": 0.9,
     },
