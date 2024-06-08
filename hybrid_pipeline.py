@@ -2,7 +2,7 @@ import os
 
 import torch
 from haystack import Pipeline
-from haystack.components.builders import AnswerBuilder, PromptBuilder
+from haystack.components.builders import AnswerBuilder, ChatPromptBuilder
 from haystack.components.converters import (
     MarkdownToDocument,
     PyPDFToDocument,
@@ -21,9 +21,10 @@ from haystack.components.retrievers.in_memory import (
 )
 from haystack.components.routers import FileTypeRouter
 from haystack.components.writers import DocumentWriter
+from haystack.dataclasses import ChatMessage
 from haystack.document_stores.in_memory import InMemoryDocumentStore
 from haystack.utils import ComponentDevice
-from haystack_integrations.components.generators.llama_cpp import LlamaCppGenerator
+from haystack_integrations.components.generators.llama_cpp import LlamaCppChatGenerator
 
 folder_path = "documents/source_documents"
 
@@ -87,25 +88,27 @@ embedding_retriever = InMemoryEmbeddingRetriever(document_store)
 bm25_retriever = InMemoryBM25Retriever(document_store)
 ranker = TransformersSimilarityRanker(model="BAAI/bge-reranker-base", top_k=3)
 
-# llm = LlamaCppGenerator(
-#     model="models/Phi-3-medium-4k-instruct-Q4_K_M.gguf",
-#     model_kwargs={"n_gpu_layers": -1, "n_predict": -1},
-#     generation_kwargs={"max_tokens": 200},
-# )
+llm = LlamaCppChatGenerator(
+    model="models/Meta-Llama-3-8B-Instruct-Q6_K.gguf",
+    model_kwargs={"n_gpu_layers": -1, "n_predict": -1},
+    generation_kwargs={"max_tokens": 500},
+)
 
-# llm.warm_up()
+llm.warm_up()
 
-# chat_template = """
-# Read the context provided and answer the question if possible.
-# If you can not form an answer from the context, reply with "Nah."
+system_message = ChatMessage.from_system(
+    """
+    Read the context provided and answer the question if possible. If you can not form an answer from the context, reply with "Nah".
+    Context:
+    {% for doc in documents %}
+    {{ doc.content }}
+    {% endfor %};
+    """
+)
+user_message = ChatMessage.from_user("query: {{query}}")
+assistent_message = ChatMessage.from_assistant("Answer: ")
 
-# Context:
-# {% for doc in documents %}
-# {{ doc.content }}
-# {% endfor %};
-# query: {{query}}
-# Answer:
-# """
+chat_template = [system_message, user_message, assistent_message]
 
 hybrid_retrieval = Pipeline()
 hybrid_retrieval.add_component("text_embedder", text_embedder)
@@ -113,33 +116,33 @@ hybrid_retrieval.add_component("embedding_retriever", embedding_retriever)
 hybrid_retrieval.add_component("bm25_retriever", bm25_retriever)
 hybrid_retrieval.add_component("document_joiner", DocumentJoiner())
 hybrid_retrieval.add_component("ranker", ranker)
-# hybrid_retrieval.add_component("prompt_builder", PromptBuilder(template=chat_template))
-# hybrid_retrieval.add_component("llm", llm)
-# hybrid_retrieval.add_component("answer_builder", AnswerBuilder())
+hybrid_retrieval.add_component(
+    "prompt_builder", ChatPromptBuilder(template=chat_template)
+)
+hybrid_retrieval.add_component("llm", llm)
+hybrid_retrieval.add_component("answer_builder", AnswerBuilder())
 
 hybrid_retrieval.connect("text_embedder", "embedding_retriever")
 hybrid_retrieval.connect("bm25_retriever", "document_joiner")
 hybrid_retrieval.connect("embedding_retriever", "document_joiner")
 hybrid_retrieval.connect("document_joiner", "ranker")
-# hybrid_retrieval.connect("ranker", "prompt_builder")
-# hybrid_retrieval.connect("prompt_builder", "llm")
-# hybrid_retrieval.connect("llm.replies", "answer_builder.replies")
+hybrid_retrieval.connect("ranker", "prompt_builder")
+hybrid_retrieval.connect("prompt_builder", "llm")
+hybrid_retrieval.connect("llm.replies", "answer_builder.replies")
 # hybrid_retrieval.connect("llm.meta", "answer_builder.meta")
-# hybrid_retrieval.connect("embedding_retriever", "answer_builder.documents")
+hybrid_retrieval.connect("embedding_retriever", "answer_builder.documents")
 
-query = "Give me a summary of the MX format"
+query = "What's up doc?"
 
 hybrid_retrieval.draw("visual_design/hybrid_retrieval.png")
 result = hybrid_retrieval.run(
     {
         "text_embedder": {"text": query},
         "bm25_retriever": {"query": query},
-        # "prompt_builder": {"query": query},
-        # "answer_builder": {"query": query},
+        "prompt_builder": {"query": query},
+        "answer_builder": {"query": query},
         "ranker": {"query": query},
     }
 )
 
-pretty_print_results(result["ranker"])
-
-# print(result["answer_builder"]["answers"][0])
+print(result)
