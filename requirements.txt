@@ -1,7 +1,8 @@
-haystack-ai
-chroma-haystack
+haystack-ai @ git+https://github.com/lbux/haystack/@llama_cpp_eval
 pypdf
 markdown-it-py
 mdit_plain
 sentence-transformers
 transformers[torch, sentencepiece]
+llama-cpp-python
+llama-cpp-haystack

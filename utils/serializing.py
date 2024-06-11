@@ -3,33 +3,6 @@ import os
 import time
 from dataclasses import asdict, is_dataclass
 
-# from haystack_integrations.components.evaluators.uptrain import UpTrainMetric
-
-# uptrain_parameters_mapping = {
-#     UpTrainMetric.CONTEXT_RELEVANCE: ["questions", "contexts"],
-#     UpTrainMetric.FACTUAL_ACCURACY: ["questions", "contexts", "responses"],
-#     UpTrainMetric.RESPONSE_RELEVANCE: ["questions", "responses"],
-#     UpTrainMetric.RESPONSE_COMPLETENESS: ["questions", "responses"],
-#     UpTrainMetric.RESPONSE_COMPLETENESS_WRT_CONTEXT: [
-#         "questions",
-#         "contexts",
-#         "responses",
-#     ],
-#     UpTrainMetric.RESPONSE_CONSISTENCY: ["questions", "contexts", "responses"],
-#     UpTrainMetric.RESPONSE_CONCISENESS: ["questions", "responses"],
-#     UpTrainMetric.CRITIQUE_LANGUAGE: ["responses"],
-#     UpTrainMetric.CRITIQUE_TONE: ["responses"],
-#     UpTrainMetric.GUIDELINE_ADHERENCE: [
-#         "questions",
-#         "responses",
-#     ],
-#     UpTrainMetric.RESPONSE_MATCHING: [
-#         "questions",
-#         "responses",
-#         "ground_truths",
-#     ],
-# }
-
 
 def serialize_generated_answer(results):
     serialized_data = []
@@ -91,14 +64,6 @@ def read_serialized_generated_answer(file_name):
             staff_answer = entry.get("answer", "")
             staff_answers.append(staff_answer)
     return queries, documents, answers, staff_answers
-
-
-# def metric_to_params(metric, data):
-#     params = {}
-#     for param in uptrain_parameters_mapping.get(metric, []):
-#         if param in data and data[param]:
-#             params[param] = data[param]
-#     return {"evaluator": params}
 
 
 def serialize_evaluation_results(evaluation_results):
